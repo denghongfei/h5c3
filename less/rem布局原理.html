@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        /*设计图是640px,然后有一个div,宽度是16px*/
+        @media screen and (width:320px) {
+            html{
+                font-size: calc(320px/20);
+            }
+        }
+
+        @media screen and (width:360px) {
+            html{
+                font-size: calc(360px/20);
+            }
+        }
+
+        @media screen and (width:414px) {
+            html{
+                font-size: calc(414px/20);
+            }
+        }
+
+        .box{
+            width:0.5rem;
+            height:0.5rem;
+            background: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="box"></div>
+    
+</body>
+</html>

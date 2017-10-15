@@ -1,0 +1,37 @@
+/* 给iphone5
+@media screen and (width:320px) {
+    body{
+        background: hotpink;
+    }
+}
+/* 给iphone6 */
+/* @media screen and (width:375px) {
+    body {
+        background:green;
+    }
+}  */
+
+/* @media screen and (orientation:portrait) {
+    body{
+        background: lightblue;
+    }
+} */
+
+/* @media screen and (orientation:landscape) {
+    body{
+        background: yellow;
+    }
+} */
+
+@media screen and (device-width: 375px) {
+    body{
+        background: lightblue;
+    }
+}
+
+
+@media screen and (device-width: 320px) {
+    body{
+        background: yellow;
+    }
+}
