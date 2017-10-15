@@ -1,0 +1,293 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+
+    移动端:
+        1).屏幕尺寸
+
+        2).屏幕分辨率
+            单位:像素
+            iphone5
+            1136*640 物理分辨率(设备分辨率,屏幕是一个硬件,当屏幕生产出来以后,像素点的个数已经确定了,不能更改)
+                竖直方向有1136个像素块,水平方向有640个像素块
+            568*320px 软件分辨率(由系统决定)不能改 ios可以去设定
+        3).长度单位
+            相对长度单位em px(只表示设备分辨率的时候)%
+            绝对长度单位 in(英寸) cm mm
+
+        4).屏幕像素密度:屏幕对角线上每英寸有多少个像素点 
+              苹果:Retina技术 大于320的屏幕
+             在相同屏幕下,PPI越大,图像显示越清晰
+
+             作为用户,同样的一个屏幕大小(3.5in)显示一样的图片大小,
+             去设置iphone4的图片的大小是16px   3GS也设置成16px
+             这样的话,我们用户用iphones3Gs看到的图片是正常的
+             但是在iphone4上看到的是模糊的图片
+
+             办法:直接给网页一张32*32的图片,然后放在iphone4还是给样式16*16,是正常的
+             但是3Gs中同样给16*16px在3Gs中不会模糊所以让用户看起来的效果就是一样大小了
+            
+             二倍图:在移动端布局的时候,所有的图都是二倍图,
+             所以一般情况都是以iphone设备为标准,设备为640宽  750宽
+         ------------------------------------------------------------------------
+        5).设备独立像素pt dp(android)
+             像素和设备独立像素的关系  window.devicePixelRatio
+             假如有这样一个单位(pt),这个单位在不同PPI上的设备中,这个单位和px有一个比值关系,
+       
+             问题:用户在相同的屏幕上看到不同的大小的效果,是不符合要求的,因此要显示成一样
+             ------------------------------------------------------------------------
+        6).视口(viewport):用来约束网站中最顶级的块元素(html),他决定了html的大小
+             1.把整个页面进行缩放(根据:就是把html的viewport设置成980px)
+             2.网页出现滚动条
+             默认viewport值980
+             viewport在移动端是可以设置的, 
+             ------------------------------------------------------------------------
+            视窗布局视口 layout viewport   在移动端可以设置
+            理想视口    ideal viewport
+                       移动端可以设置
+             如果想要让页面不出现滚动条或缩放,只需要layout viewport = ideal viewport
+
+             快捷方法 meta:vp
+             设置视口
+             <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+
+             width=device-width:设置视口的宽度是设备的宽度,让网页占满全屏宽度
+             initial-scale=1.0: 当页面第一次打开,页面整体缩放1倍(没有缩放)
+             viewport的宽度为了自适应各种屏幕,一般不给具体数值,都是直接给device-width自适应
+             maximum-scale=2.0:只能缩放2倍页面大小23
+             <meta name="viewport" content="width=500">
+
+        ------------------------------------------------------------------------
+        7).移动端浏览器
+        手机自带浏览器:safari android
+        第三方浏览器 uc  qq浏览器
+        应用内置浏览器(webview)    微信 qq 微博    
+        
+        ------------------------------------------------------------------------
+        8).移动端布局
+            固定布局(废弃)
+            百分比布局(电商)流式布局        
+            rem布局方案(rem单位做适配)
+
+            margin-left:50%; /*相对于父元素的宽度*/
+            padding-top:10%; /*相对于父元素的宽度*/
+            border没有百分比的写法
+
+        flex伸缩布局
+        栅栏化布局  整体的
+        flex        局部的伸缩样式
+        给伸缩容器的
+        display:flex
+        flex-direction column 垂直排列    row水平排列 
+
+        justify-content      调整主轴对齐
+              flex-start;让子元素从父容器的开头排序
+              flex-end;  让子元素从父亲的结尾开始排序 盒子顺序不变
+              center;    居中对齐
+              space-between; 左右盒子贴近父盒子,中间的平均分布空白间隙
+              space-around;  都会有空隙  左右外边距
+
+        align-items    垂直对齐 侧轴对齐
+                flex-start 上对齐
+                flex-end    底对齐
+                flex-center  垂直居中 
+                stretch      让子元素的高度拉伸适用父容器(子盒子没有高度)
+
+        align-content: 多行垂直对齐
+                 规定了伸缩项目在侧轴上的对齐方式  父元素(display:flex;)   
+                 flex-flow: row wrap;(这句话必须有,否则不起作用) 
+
+        flex-wrap 是否换行
+            nowrap 强制一行显示  不换行,压缩显示 默认值
+            wrap   自动换行
+            wrap-reverse 翻转
+
+        flex-flow 排列方向  换不换行 row wrap
+                 两个中间用空格隔开 
+
+        order:用css来控制盒子的前后顺序, 默认值是0;  (z-index) 数值越小,越往前            
+     
+       
+       
+        给伸缩项目的
+         flex规定了伸缩项目占伸缩容器剩余空间的比例
+         order 伸缩项目在伸缩容器中的排列顺序值越小,越靠前
+
+         ------------------------------------------------------------------------
+         .seckill-more 和after不同级
+         为什么after叫伪元素?after不在真是的DOM树上
+         通过之前用js获取的方法不能操作
+         text-decoration: line-througgh  删除线
+         去除图片3像素bug:  vertical-align: middle;
+         ------------------------------------------------------------------------
+         自动出现省略号：
+            强制在一行显示，并且自动出现省略号： 
+                white-space： nowrap;
+                overflow:hidden;
+                text-overflow:ellipsis;
+
+            多行文字自动出现省略号: 让文字自动出现省略号,显示两行文字
+                /*让p标签变成伸缩标签*/
+                display: -webkit-box;        /*类似于display:flex;*/
+                -webkit-box-orient:vertical; /* 类似于flex--direction */
+                -webkit-line-clamp:2         /*让文字显示两行*/
+         ------------------------------------------------------------------------
+                background-clip: content-box;  从content区域开始向外裁剪背景
+                background-orign: content-box; 从content区域开始显示背景图像  padding-box  border-box
+
+        ------------------------------------------------------------------------
+        9).iScroll是什么?
+            iScroll是移动端的一个插件,它主要的作用就是为我们很方便的提供一个实现原生滚动效果
+            就是是指轻轻一划就能滚动一段距离,滚动效果有惯性
+          
+            var myScroll = new IScroll('#wrapper');
+        ------------------------------------------------------------------------
+            easy less
+
+            /*给placeholder改变颜色*/
+            header inpt:: -webkit  
+
+            :before和::before那个好?
+            单冒号好 兼容性好  
+            box:before{
+            content: attr(title);
+            content: url();
+            }  
+            line-height: 1;        1px*font-size; 
+---------------------------------------------------------------------------------
+                       less
+                       
+        1.  less 是一个CSS预处理器
+          lessc 代表lessc .\main.less .\main\css      -webkit-animation:  
+        
+        2.单行注释: 给开发者看得,不会编译到css中
+          多行注释: 给用户或者想让人看到的注释
+        3.变量
+            格式:@变量名: value
+            @primaryColor:pink;
+            @ciColor: hotpink;
+            header {
+                background-color: @primaryColor;
+                color: @hotpink;
+            }
+        4嵌套规则:  嵌套尽量不要超过三层
+        .container {
+            h1 {
+
+            }
+            p {
+
+            }
+            myclass {
+
+            }
+        }   
+        父选择器 &
+        a {
+            color: yellowgreen;
+            &:link {
+                color: orange;
+            }
+
+        } 
+        无参混合器
+        .chang() {
+
+        }
+        .box{
+            .chang();
+        }
+        有参数的混合器(必须传参数)
+        有参数的混合器有默认值
+
+        //继承(少用):当以个元素最多有一两句代码不一样在去用继承  
+        //格式:&:extend(选择器)
+
+       导入其他less文件 @import "src";
+------------------------------------------------------------------------
+
+                        媒体查询
+   1.  media属性 可以在该属性中写媒体的条件
+
+        应用媒体查询来判断iphone 和iphone6
+        应用media  不同的是link方式 media是一个属性 但是在一个样式表中media就是一个关键字
+            @media screen and (width: 320px){
+                    body{
+                        background: hotpink;
+                    }
+            }  
+            @media screen and (width: 375px){
+                    body{
+                        background: green;
+                    }
+                }   
+    
+        通过media属性引入:    哪个设备写哪个设备的样式,分的清晰,维护起来比较清晰,不互相影响,
+        通过@media关键字引入: 只需要用@media引入媒体查询中各种设备不同之处
+
+    2.演示width 和height
+      演示max-width(最大宽度==小于等于宽度)    max-height
+      device-width 设备屏幕的宽度   设备屏幕的高度
+      orientation portrait || landscape 横|竖屏
+
+      ------------------------------------------------------------------------
+      Respond.js是一个极小的增强web浏览器的Javascript库,使得原本不支持css媒体查询浏览器能够支持.
+      改脚本循环比那里页面上的所有css引用,并使用媒体查询
+
+
+      ------------------------------------------------------------------------
+     3.  
+        em的值相对的是自身font-size的大小
+        rem是一个相对长度单位 r(root)em,相对的是根元素的font-size的大小
+
+        ------------------------------------------------------------------------
+      4.目标:把设计图高度还原成HTML页面,没有缩放
+        对象:设计图  只有一份 有两种选择 (640px 750px)的设计图
+        对象:屏幕 有各样的屏幕 
+        要做的   :::  把设计图完美的适配到各个屏幕(只指的是手机屏幕)
+        640px的设计图
+            把设计图人为的分成20份,一份 = 32px
+            16*16px的div占了0.5份
+
+        320px的屏幕
+             把设计图按比例放入屏幕的时候,我们人为的把屏幕分成20份   
+             320px宽的屏幕分成20份
+             一份 = 16px;
+             既然在设计图中,元素占了设计图的0.5份,阿么为了按比例放入屏幕,所以该元素在屏幕里占0.5份
+             0.5份 = 8px;   
+        360px的屏幕
+             一份 = 18px
+             0.5份 = 9px;     
+    ------------------------------------------------------------------------
+                             项目
+    1.设计项目需求
+    2.产品经理-出原型图
+    3.问设计要配色方案 ---setting.less
+    4.设计的设计图-到前端手里
+    5.前后端联调   
+    F8                                    
+
+
+
+
+
+            
+
+
+
+
+       
+            
+
+
+
+
+    
+</body>
+</html>
