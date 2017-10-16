@@ -41,8 +41,8 @@
 			width: 112px;
 			height: 100%;
 			transform-style: preserve-3d;
-			transform: rotateX(0deg);
 			transition: all 1s;
+			transform: rotateX(0deg) rotateY(30deg);
 			/* background: yellow; */
 		}
 
@@ -52,14 +52,43 @@
 			left: 0;
 			width: 100%;
 			height: 100%;
-			
-		
+			background: red;
 		}
 
-		li span:nth-child(1){
+		li span:nth-child(1) {
 			background-image: url("./images/1.jpg");
-		
+			background-repeat: no-repeat;
+			transform: translateZ(150px);
+		}
 
+		li span:nth-child(2) {
+			background-image: url("./images/2.jpg");
+			background-repeat: no-repeat;
+			transform: rotateX(90deg) translateZ(150px);
+
+		}
+
+		li span:nth-child(3) {
+			background-image: url("./images/3.jpg");
+			background-repeat: no-repeat;
+			transform: rotateX(180deg) translateZ(150px);
+
+		}
+
+		li:nth-child(2) span {
+			background-position: -112px;
+		}
+
+		li:nth-child(3) span {
+			background-position: -224px;
+		}
+
+		li:nth-child(4) span {
+			background-position: -336px;
+		}
+
+		li:nth-child(5) span {
+			background-position: -448px;
 		}
 	</style>
 </head>
@@ -67,6 +96,30 @@
 <body>
 	<div class="view">
 		<ul>
+			<li>
+				<span></span>
+				<span></span>
+				<span></span>
+				<span></span>
+			</li>
+			<li>
+				<span></span>
+				<span></span>
+				<span></span>
+				<span></span>
+			</li>
+			<li>
+				<span></span>
+				<span></span>
+				<span></span>
+				<span></span>
+			</li>
+			<li>
+				<span></span>
+				<span></span>
+				<span></span>
+				<span></span>
+			</li>
 			<li>
 				<span></span>
 				<span></span>
