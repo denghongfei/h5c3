@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>swipe手势封装</title>
+</head>
+
+<body>
+    <script>
+        //功能:判断手势方向
+        // 思路:如other文件夹中的图
+
+        // 步骤:
+        // 1.声明变量
+        var startX, endX, startY, endY, absX, absY;
+        //2.给document添加touchstart事件
+        document.addEventListener('touchstart', function (e) {
+            var touches = e.changedTouches[0];
+
+            //3.获取起始点的坐标
+            startX = touches.clientX;
+            startY = touches.clientY;
+        })
+        //4.给document添加touchend事件
+        document.addEventListener('touchend', function (e) {
+            var touches = e.changedTouches[0];
+
+            //5.获取结束点的坐标
+            endX = touches.clientX;
+            endY = touches.clientY;
+
+            // 6.计算X和Y的坐标的绝对值
+            absX = Math.abs(endX - startX);
+            absY = Math.abs(endY - startY);
+
+            //7.判断水平还是垂直
+            var diection = absX > absY ?
+                // 8. 如果是水平 判断左右
+                endX > startX ? '向右' : '向左' :
+                // 9. 如果是竖直 判断上下
+                endY > startY ? '向下' : '向上'
+                console.log(diection);
+
+
+        })
+
+
+
+    </script>
+
+</body>
+
+</html>
