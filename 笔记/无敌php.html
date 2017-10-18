@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    1.数据类型 
+         1).定义字符串 $num = 10;
+                      $float = 10.12; 
+                      true或false
+           注释 // /** **/多行注释
+           
+         2).数组:
+             //索引数组
+             $courses = array('html','css','js');
+             //关联数组
+             $user = array('username'=> 'admin','password'=> 123456);
+
+         3).对象
+         //在PHP中,创建一个对象,需要先创建一个类,根据类创建对象
+         
+         //a.创建类
+          通过关键字class创建
+          class 名称{
+              //定义类的结构
+          }
+          class Person{
+              //定义属性和方法
+             public $name = '小明';
+             public $age = 16;
+             public function sayHi(){
+                 echoo '你好';
+             }
+          }
+          $p = new Person();
+          $p就是一个对象
+          //通过 -> 来调用对象的属性或方法  echo $p ->name; $p->sayHi();
+
+         4)Null
+          is_null 检测某一个变量是否为null
+          如果为null,则返回值为true,如果输出内容不是字符串,会隐式的进行转换
+          echo true; 被转成echo 1;
+          echo false 会被转成 echo '';
+
+        -------------------------------------------------  
+        
+        2.内容输出
+        echo 'hello world';
+
+        $arr = array('html','css','js');
+        使用print_r()来输出数组结构 print_r();
+        使用var_dump()来输出变量的详细信息 var_dump($str);
+     ---------------------------------------------------------
+     3.运算符
+        在PHP中 使用运算符 . 来进行字符串的拼接, 类似于 +
+    -----------------------------------------------------------
+    4.函数
+         使用关键字function来定义一个函数
+
+         function fn(){
+
+         }   
+         fn(); 
+         
+         //定义带返回值的函数
+         function bar(){
+            return 'hello world';
+         }
+         bar();
+         //带参数的函数
+         function foo($arg){
+             $echo $arg;
+         }
+         foo(1);
+         //PHP可以设置参数的默认值
+         function sayHi($name='小红'){
+             echo '你好' . $name;
+         }
+         sayHi('小明');
+         sayHi(); 
+     
+    ---------------------------------------------- 
+  5.流程控制   
+  for($i=0; $i<=100; $i++) {
+      echo $i;
+      echo '<br>';
+  }  
+  // 索引数组: 在PHP中使用count()来计算数组的长度 count()  key是下标
+     关联数组: 使用foreach 来遍历数组
+     foreach($user as $key=>$val) {}
+
+ ----------------------------------------------
+    6).表单:收集用户提交的信息form  空格:全角空格  
+    action 用来指定后端接受数据的地址 action="./login.php"
+    name属性:用来向后端提交数据
+    method属性: 用来指定表单数据提交的方式,默认值为get
+
+    //PHP通过超全局变量来获取客户端提交过来的数据 $_POST  $_GET $_REQUEST来获取
+    $_GET是一个数组,浏览器(客户端)提交上来的数据会被自动放到$_GET这个数组中print_r($_GET);
+    $_POST是一个数组,浏览器(客户端)提交上来的数据会被自动放到$_POST这个数组中
+    $_REQUEST是一个数组,客户端以get或post提交上来的数据会自动放到$_REQUEST中
+
+    复选框checkboc hobby[] 单选框radio
+    上传文件:使用超全局变量 $_FILES 获取客户端提交上来的文件
+    多个文件上传也是id[]
+    <input type="file" name="id[]">  multiple 
+    a.只能以post方式提交文件
+    b.上传文件时<form enctype="multipart/form-data"></form> 
+    $_FILES是一个二维数组,数据中记录了上传文件详情
+    ----------------------------------------------
+    登录功能
+    //1.用户通过表单输入,将数据提交至后端
+    //2.后端数据并处理逻辑
+        a).将获得的数据与数据库中存储数据进比对
+        b)比对成功或失败
+
+    //变量来模拟数据库
+    $users = array(
+        'admin'=>123456,
+        'test'=>654321
+    );
+    //用户提交的用户名
+    #name = $_POST['name'];
+    //用户提交的密码
+    $pwd = $_POST['pwd'];
+    //再通过数组模拟数据库时,使用的关联数组的key充当用户名
+    //所以要想判断用户存不存在只需要检测数组中有没有对应的key
+
+    //PHP通过array_key_exists来检测数组中是否存在某个key   //返回布尔值
+    if(array_key_exists('admin',$users)) {
+        if($pwd ==$users[$name]){
+            echo '登录成功';
+        }else{
+            echo '用户或密码错误';
+        }
+    }else{
+        echo '用户不存在!';
+    }
+
+    ----------------------------------------------
+    7).PHP解析
+
+    当地址中输入地址访问的如果是一个.php结尾的,Apache会调用php解析程序进行解析,php有其自己的解析原则
+    php解析程序,只会对<?php和?>中间部分进行解析,除此以外部分原样返回
+    
+    混合解析:利用PHP的解析规则,可以更方便的处理html和数据的关系
+
+    ----------------------------------------------
+    8).HTTP协议:指服务器和客户端间进行通信时的约束和规范
+            http协议即超文本传输协议
+
+            1).请求行 请求头 请求主体
+
+            2)  Response
+                    
+            状态行
+            响应头
+                //通过header函数可以定义响应头
+                 header('Content-Type: text/css');
+            响应主体
+                状态码 200成功 302重定向  304文档未修改   403 for-bidden没有权限  404 Not Found 500服务器错误
+            
+                如何使用浏览器发起一个请求?
+                 1)地址栏
+                 2)标签的href属性
+                 3)标签的src属性
+                 4)表单的action属性
+                 5)css的url
+
+     ----------------------------------------------
+     9.文件编码&MIME类型
+      header('Content-Type: text/html; charset=utf-8');
+
+      MIME类型: text/html   text/css  text/javascript  image/jpge
+
+      ----------------------------------------------
+      10)重定向   header('Location:www.baidu.com');
+
+      刷新:
+      header('Refresh: 3; url=http://www.taobao.com');
+      echo '等我3秒钟,我会去淘宝'; 
+      ----------------------------------------------
+      总结:
+
+      //指定MIME和编码
+      header('Content-Type: text/html; charset=utf-8');
+      //刷新
+      header('Refresh:3; url=http://www.baidu.com');
+      //重定向
+      header('Location: http://www.taobao.com');
+      ----------------------------------------------
+      10).缓存:
+      //浏览器60s后再次向服务器发起请求
+      (协商缓存)
+      header('Cache-Control: max-age=60');
+      PHP操作文件方式有很多
+      $res = file_get_contents(./04file.txt);
+      写入(覆盖)
+      file_put_content('./04file.txt','我是小红');
+      ----------------------------------------------
+      11)下载:
+      <a href="./img.php"></a>
+      $img = './avatar_1.jpg';
+      header('Content-type: application/octet-stream');  二进制
+                                     副件                           
+      header('Content-Disposition: attachment; filename=girl.jpg');
+
+      ob_clean();   //清空掉缓存内容
+      readfile($img); //读取文件
+
+      ----------------------------------------------
+      12)请求头处理和应用
+         enctype的默认值是application/x-form-url-encoded
+         enctype 跟请求头中的Content-Type相对应
+
+         // php是由能力获得请求头信息的  $_SERVER
+         //通过超全局数组来获得  $_GET $_POST $_REQUEST $_FILES
+
+         $agent = $_SERVER['HTTP_USER_AGENT'];
+         //检测某个字符在某个字符串中
+         strpos($agent, 'iPhone');
+       
+         if(strpos($agent, 'iPhone');){
+                header('Location: http://m.jd.com');
+         }else{
+                header('Location: http://jd.com');
+         }
+      ----------------------------------------------
+      13).PHP变量作用域
+
+        a.局部变量定义在函数中
+        function bar(){
+            $name = '小明';
+        }
+        外部无法访问局部变量
+
+        b.全局变量:定义在函数外部
+        $name = '小明';
+        function bar(){
+            //在局部不能直接访问到全局变量
+            echo $name;
+        }
+        bar();
+        c.如果需要在局部访问全局使用关键字global指定 global $name;
+        在局部可以修改全局变量
+
+        除了使用关键字可以访问全局数组,还可以使用$GLOBALS
+        将所有的全局变量都存起来了
+
+        d).静态变量
+        static $count = 1;
+        
+        e).常量
+        //如果define传递第三个参数则不区分大小写,
+        第三个参数,默认值为false
+            define('VERSION','1.0',true);  
+
+            VERSION ='1.2'语法错误
+            define('VERSION','1.2'); //不能重复定义
+            只声明不赋值不可以
+
+         ----------------------------------------------   
+        14).文件包含
+        <!-- 包含外部的html  -->
+        <iframe src="" frameborder="0"></iframe>   //默认高度是500
+        include './header.html';
+        include_once 相同文件只会包含一次
+        require和reqiure_once
+        区别:include加载失败会继续执行, require加载会终止脚本的执行
+
+        return '你好,php';   通过include可以接收
+-----------------------------------------------------------------------------------------
+
+        1.字符串
+            $str = 'hello worls!';
+            strlen($str) 获取字符串长度
+            mb_strlen    汉字占3个字节
+            //PHP默认不支持 宽字符集,需要通过修改配置使之支持
+
+            //通过phpinfo获取php详细信息,比如版本 配置路径 支持扩展
+            phpinfo();
+
+            substr($str,2,4);  //截取字符串 
+            mb_substr(); //宽字符集  
+            strtoupper(); 转成大写
+            strtolower(); 转成小写
+            ucfirst();    首字母转成大写
+            ucwords();    每个单词的首字母转成大写
+            trim();       去除首尾空格  
+            ltrim();          
+            rtrim();  
+
+            strrev(); 字符串反转
+            strpos($str,'t'); 字符串首次出现的位置 找不到是false
+            mb_strpos();
+            strrpos(); 从右开始找,从左开始算
+
+            strstr(); 用于查找字符串首次出现的, 首次出现的位置截取字符串
+            strchr();
+            str_replace('16',18,$str);  不支持正则表达式 
+            str_repeat('呵',10); 重复一个字符串 
+        ---------------------------------------------------------    
+        2.数组
+            1).数组指针
+                current 返回数组中的某个单位 
+                    echo current($arr); 输出当前指针指向的单元值,默认为第0个
+                next($arr);   将指针后移一步 
+                prev($arr);   将指针前移一步
+                end($arr);    将指针指向数组最后一个单元
+                reset($arr);  将指针指向数组的第一个单元值
+                key();        返回当前指针的位置
+            2).数组取值
+                list();       将数组中的单元值一次性赋值给某些变量  
+                //按顺序从数组中取值
+                $list($a,$b,$c) = array('html','css','js');  
+            
+            3).都是对元素操作  排序
+           
+                sort($arr);    正序  索引值重新排序(不保留)       对数组进行排序,排序是针对原数组进行排序 
+                rsort();       倒序  索引值重新排序 
+                asort();       正序  保留索引关系
+                arsort();      倒序  不保留索引关系
+
+                //根据关联数组的key进行排序,正序
+                     $user = array('$name'=>'小明','$age'=16);
+                ksort($user);  正序 保留索引关系
+                krsort($user); 倒序 保留索引关系
+            
+            4).字符串数组互换
+
+            explode(' ',$str);    将字符串拆分成数组
+            implode(' ',$arr);    将数组拼凑成字符串 
+
+        5).其他
+             array_keys();    将数组中的所有"键"取出,组成一个新数组
+             array_values();  将数组中所有单元的"值"取出,组成一个新数组
+             array_key_exists(); 判断数组中是否存在某个key  
+             array_unique();     将数组中重复的值删除掉
+
+             操作原数组
+             array_pop();   将数组中最后一个值弹出来
+             array_push();           可以在数组中添加一个单元
+             array_shift();
+             array_unshift();
+
+        ----------------------------------------------
+        3.  time();   获取时间戳;
+        通过date可以将时间戳格式化
+        date('Y-m-d,H:i:s',time());  y是17   
+        date('Y-m-d',strtotime('2day'));  1week   -1month
+  -----------------------------------------------------------------------------------------
+  
+                               文 件
+
+        1.pathinfo($path);         获得一个关联数组
+            dirname     basename    extension    filename                               
+            目录名       文件完整名    文件扩展名   文件名
+
+        2.dirname($path); 目录名称
+        注意细节:   pathinfo dirname 和basename 
+        并不检测路径是否训在,只是单纯分析路径的格式,文件名不一定所有文件扩展名
+
+         3.filesize($path);    会自动检测文件路径是否存在   ,不存在有错误
+         
+         通过检测文件是否存在是否存在然后在进行操作
+         可以避免一些不必要的错误出现,使用逻辑更健壮
+         4.file_exists();
+
+         5.is_dir();    检测目录 
+          is_file();     检测文件
+
+         6.realpath();   //自动检测路径是否真实存在,然后再将绝对路径输出
+          rename($img,'./avatat.jpg');     修改文件名  (也可以更改路径)
+
+         7.file_get_contents()  读取文件             不支持二进制   
+
+          file_put_contents($demo.php,array('name'=>'小明'))  写入文件 
+          支持数组和字符串(如果不是字符串那么会隐式转换) 覆盖
+          内容追加
+          file_put_contents(./demo.txt,'男',FILE_APPEND);
+
+          8.文件上传    文件必须存在
+            数组中tmp_name 单元是文件上传上来后的临时目录   默认值C盘下
+              sleep(5);延长程序执行  
+
+            先将文件放到某个临时目录,然后由开发者将上传上来的文件转移具体的目录
+            通过move_uploaded_file()来实现 
+            
+        ---------------------------------------------- 
+        8. copy() 复制文件
+         $path = './avatar.jpg';  一个文件是包含其目录的
+         copy($path,'./images/avatar1.jpg'); 
+         
+         unlink();删除文件
+
+         disk_free_space();   磁盘剩余空间
+         disk_total_space();  磁盘总大小 
+-----------------------------------------------------------
+                  文件操作
+    readfile($file);   资源类型
+
+     操作文件步骤
+        //1.打开文件
+        使用fopen打开文件后,其返回为资源ID
+            $res1 = fopen(./test/demo.css,'r+'); 
+            var_dump($res1);
+
+        //根据资源ID对文件进行操作
+                a).读取
+                echo fread($res,4);
+
+                b).写入
+                fwrite($res1,'body');   w+
+
+                c).关闭文件(释放资源)
+                fclose($res1);
+
+        补充:打开文件时,可以正定某种""模式"打开文件
+            a.只读模式 r  读写模式 r+  覆盖
+            b.只写模式 w  读写模式 w+
+            c.追加模式 a   追加模式a+ 
+            
+            当以w w+ 模式打开时,会清空原文件
+
+            当使用w+模式打开时,会清空文件,并且指针(光标)指向文件开始
+                $res = fopen($file,'w+');
+
+            以w+模式打开时,写入内容后光标停留在了结尾 
+                fwrite($res,'hello');
+
+            //重置指针(光标)  
+                rewind($res);  
+
+            fread 读取文件时从指针(光标)位置开始
+                echo fread($res,4);
+
+             fgets($res);    逐行读取
+----------------------------------------------   
+       注册 提交数据后端存到文件中  
+       $res = fopen('./user.txt', 'a');
+
+        array_push($_POST, ",\r\n");
+
+        $user = implode(' ',$_POST);
+
+          if(fwrite($res,$user)) {
+            echo '注册成功';
+          };
+          fclose($res);
+
+----------------------------------------------  
+       登录
+      <?php
+
+      // print_r($_POST);
+    //用户提交上来的数据
+      $username = $_POST['username'];
+      $pass = $_POST['pass'];
+
+      //从数据库中查找
+      $res = fopen('./user.txt', 'r');
+
+
+
+      //取出用户所有的信息,存在一个数组中
+      $users = array();
+
+      while($txt = fgets($res)){
+        array_push($users,$txt);
+      }
+      // print_r($users);
+
+      //关闭资源
+      fclose($res);
+
+      //定义一个数组,将来存储用户的信息
+      $userarr = array();
+
+      foreach($users as $key=>$val){
+      //将用户的信息用空格拆分成数组
+      $usr = explode(' ',$val);  
+      //将多余的","去掉
+      array_pop($usr);    
+      // print_r($usr);
+
+      //拼凑成一个key为用户名val为密码的关联数组
+      $userarr[$usr[0]]=$usr[1];
+
+      }
+      // print_r($userarr);
+      if(array_key_exists($username, $userarr)) {
+        if($pass ==$userarr[$username]) {
+          echo '登陆成功';
+        }else {
+          echo '密码错误';
+        }
+
+      }else{
+        echo '用户名不存在';
+      }
+ -----------------------------------------------------------------------------
+    getcwd()  获得当前工作目录  current work directory
+
+    __DIR__
+
+    __FILE__       __LINE__
+
+    mkdir(./test);  创建目录  //默认不支持递归创建   通过第三个参数
+    第二个参数:用来设定目录的访问权限
+    mkdir(./test/css/abc,0777,true);
+
+    rmdir(./) 删除目录(只能删除空文件夹)
+
+    要想查看某目录下的文件,需要先打开目录
+
+    1.打开目录
+    $res = opendir(__DIR__);
+
+    2.查看目录
+    readdir($res); 每次读取一个目录或文件
+      . 和 .. 本质上是目录<任何目录下都存在,只是默认是隐藏
+    readdir($res);
+    readdir($res);
+    closedir($res); 关闭
+
+    scandir(__DIR__);  查找指定目录文件及子目录
+
+    --------------------------------------------------
+    页面展示
+    1.bug答疑:
+    $rows = '';
+    while($row = fgets($res)) {
+        $rows .=$row;
+    }
+    2.有与array_push类似的操作
+
+    $arr = array();
+    $arr[] = 'b';
+
+    ----------------------------------------------
+                                    百度网盘
+
+    1.取出公共目录
+    2. disk.php 磁盘相关的信息
+    
+        define("DISK",'E:');
+        $total = round(disk_total_space(DISK)/1024/1024/1024,1);
+        $free = round(disk_free_space(DISK))/1024/1024/1024,1);
+        $used = $total - $free; 
+        return array(
+            'total' =>$total,
+            'free' => $free,1,
+            'used' => $used,
+            'percent' =>round($used/$total,1)*100 . %
+
+     index.php
+          $diskinfo = include './disk.php';
+
+     index.html
+         <?php echo $diskinfo[$total]; ?>  
+         <?php echo $diskinfo[$used]?>   
+-----------------------------------------------------------------------------
+
+    3.  需求:根据目录查找其所有字目录及子文件
+
+        opendir() readdir()  closedir()
+        
+        判断目录和文件,获得修改时间
+        如果是文件,计算文件的大小
+
+       function myscan($dir) {
+                //将utf-8转成gbk
+            $dir = iconv('utf-8','gbk',$dir);
+          
+            //检测
+            if(!is_dir($dir)) {
+                return;
+            }
+            //所有子目录及文件
+            $rows = scandir($dir);
+            $list = array();
+
+            foreach($rows as $key=>$val) {
+                if($val =='.' || $val =='..'){
+                   continue;
+                }
+                $tmp = array();
+                $path = $dir . / . $val;
+                if(is_dir($path)) {
+                    $tmp['name'] = $val;
+                    $tmp['size'] = '-';
+                    $tmp['mtime'] = date('Y-m-d,filemtime($path));
+                    $list[] = $tmp;
+                }
+
+                if(is_file($path)) {
+                    $tmp['name'] = $val;
+                    $tmp['size'] = filesize($path);`
+                    //返回文件或目录的修改时间
+                    $tmp['mtime'] = date('Y-m-d h:i:s',filemtime($path));
+                    $list[] =$tmp;
+                }
+            }
+            <!-- print_r($rows);     -->
+            return $list;
+        }
+        print_r(myscan(__DIR__));
+
+----------------------------------------------
+    exit;  
+    $tmp['realpath'] = realpath($path);
+
+    $tmp['realpath'] = iconv('gbk','utf-8',$path);
+
+    $dir = isset($_GET['name']) ? $_GET['name'] : DISK;    
+    
+    echo $dir;
+    ----------------------------------------------
+    编码:
+    win  GBK
+    PHP处理逻辑 utf-8
+    $tmp['name'] = iconv('gbk','utf-8',$val);
+
+    图标:
+    $tmp = true;
+         <?php if($val['flag']){ ?>
+                <a href="./index.php?name=<?php $val['realpath']; ?>">
+                    <?php $val['name'] ?>
+                </a>
+                <?php }else{ ?>
+                <a href="javasctipt:;">
+                    <?php $val['name'] ?>
+                </a>
+         <?php } ?>
+
+     
+     文件后缀: $tmp[type] = $pathinfo($path)['extension'];
+     
+     面包屑导航:
+       
+        function finddir($dir) {
+            static $parents = array();
+            $pars = dirname($dir);
+            $parents[] = $pars;
+
+            if($pars !=DISK) {
+                finddir($pars);
+            }
+            return $parents;
+        }
+        //面包导航
+        $breadcrumb = array_reverse(finddir($dir));
+
+        foreach($breadcrumb ad $key=>$val) {
+            <a href="index.php?name=<?php echo '$val' ?>"></a>
+        }
+---------------------------------------------------------<?php
+
+$diskinfo = include './disk.php';
+
+// print_r($diskinfo);
+// exit;
+
+$dir = isset($_GET['name']) ? $_GET['name'] : DISK;
+
+function finddir($dir) {
+	//声明静态变量,防止递归时重复调用
+	static $parents = array();
+	$tmp = array();
+	$pars = dirname($dir);
+	$name = basename($pars);
+	$tmp['path'] = $pars;
+	$tmp['name'] = $name;
+	$parents[]=$tmp;
+
+	if($pars !=DISK) {
+		finddir($pars);
+	}
+	return $parents;
+
+}
+
+// 面包屑导航(将结果反转)
+	
+	$breadcrumb = array_reverse(finddir($dir));
+	// $breadcrumb = array_reverse(finddir($dir));
+
+	function scan_dir($dir){
+		if(!is_dir($dir)) {
+			echo '不是一个目录';
+			return;
+		}
+        $rows = scandir($dir);
+
+		$list = array();
+		
+
+		foreach($rows as $key=>$val) {
+			if($val =='.' ||$val=='..') {
+				continue;
+			}
+
+			$path = $dir . '/' . $val;
+		
+			$tmp =array();
+
+			$tmp['name'] = iconv('gbk','utf-8', $val);
+			$tmp['mtime'] = date('Y-m-d', filemtime($path));
+			$tmp['realpath'] = realpath($path);
+			$tmp['flag'] = true;
+			$tmp['type'] = 'floder';
+
+			if(is_dir($path)) {
+				$tmp['size'] = '-';
+			}
+			if(is_file($path)) {
+				$tmp['size'] = filesize($path);
+				$tmp['flag'] = false;
+				$tmp['type'] = pathinfo($path)['extension'];
+
+			}
+                $list[] =$tmp;
+		}
+	
+		return $list;
+	}
+
+  $items = scan_dir($dir);
+  // print_r($items);
+
+include './views/index.html';      
+
+-----------------------------------------------------------
+//检测数组中是否包含某个值
+in_array() 
+显示图片的路径:image.php?name
+$path =$_GET['path'];
+$path = iconv('utf-8','gbk',$path);
+readflie($path);
+
+-----------------------------------------------------------
+                                HTTP会话
+  
+     1.特点:简单灵活 无连接 无状态
+        无状态协议: 对于处理事务没有记忆能力
+
+        cookie: 存储在客户端(浏览器)上的数据
+        cookie组成: name value expires path  domian
+
+        expries 失效的时间(浏览器关了)
+
+
+        //定义方法和格式: 
+        document.cookie = 'name=value;expires=时间;path=路径;damian=域名';
+      
+-----------------------------------------------------------------------------
+     2.设置cookie
+        浏览器中操作cookie      高级(内容设置)    Application   Cookies
+        <script>
+            //存储和设置
+            document.cookie = 'age=16;expries=' + new Date('2017-09-18')+';path=/;doamin=study.com';
+        </script>
+
+        只要cookie没有失效,随时可以对cookie进行读取,除非清除浏览器缓存
+        console.log(document.cookie);
+        cookie是由目录限制的,默认只能在当前目录及其子目录
+        只能设置当前域名
+----------------------------------------------
+    3.读取cookie
+        以字符串的形式存在的 string   
+        
+    4.cookie用途:
+        a.数据缓存,通过设置过期时间,可以长时间保存数据
+        b.数据共享,通过domian和path可以跨页面传递数据
+          注:cookie有大小限制,约4k
+
+        c.服务端交互,最主要用途是浏览器会自动将cookie作为所有请求的头信息传递给服务器
+        <link rel="stylesheet" href="./css/demo.css">
+        请求方式 img  link  script  action
+            不能存储大量数据:1.大小限制 2.每次存储都会将cookie传递过去   
+----------------------------------------------
+    4.解析cookie
+        jquery.cookie.js
+        cookie是以固定格式的字符串形式存在的,要方便使用它,需要处理成对象格式
+            可以利用字符串处理方法或正则表达式处理
+        <script>
+            //通过$.cookie()来操作,其中$.cookie(name,value)用来设置cookie
+
+            $.cookie('age,18',{
+                expires: new Date('2018-12-01'),
+                path: '/'
+            });
+            // $cookie(name)用来获取 cookie
+            console.log($.cookie('age'));
+
+            //删除cookie
+            $.removeCookie('name');
+        </script>   
+----------------------------------------------
+    5.<!-- 后端交互    -->
+        通过服务端操作cookie 
+        //使用$_COOKIE超全局数组可以获得客户端(浏览器)
+        print_r($_COOKIE);
+        
+        //使用setcookie 函数可以""指挥"浏览器设置 cookie
+        //当调用setcookie后,会自动设置一个响应头
+        Set-Cookie,当浏览器看到这样一个响应头,会设置一个cookie
+
+
+        setcookie('gender','男',strtotime('1year'),'/');  //设置时间为一年
+-------------------------------------------------
+                            session
+       1.存储在服务端的数据,主要记录客户端的访问状态
+       
+       Session的工作机制:为每个访问者创建一个唯一的标识(UID),并基于这个标识来存储变量,
+       一般标识存储在cookie中
+
+       操作:session
+       <?php
+
+       //在PHP中通过session_start开启session
+       session_start();
+
+       //通过超全局数组$_SESSION可以操作(读取和设置)session
+       $_SESSION['name'] = '小明';
+
+       当使用$_SESSION在服务端存一个session时,会自动设置一个响应头set-Cookie,
+       浏览器看到这个响应头会自动设置一个cookie,并且这个cookie是可以在下次请求时,
+       被当成请求头传递给服务端,然后服务端会使用这个cookie来查到相应的session
+
+       session不是独立使用的,通常需要配合cookie一起使用
+
+-----------------------------------------------------------------------------
+                            php面向对象
+    1.面向对象: (oo)   封装  继承  多态  
+    2.面向对象编程(oop)   
+    3.封装
+    //通过关键字class创建一个类
+    class Person {
+        //封装的逻辑
+        $name = '小明';
+        $age = 16;
+        function sayHi(){
+
+        }
+    }    
+    4.继承 extends
+        class Parent1 {
+            public $name = '小明';
+        }   
+        class Child extends Parent1 {
+            public function sayHi() {
+                echo $this->name;
+            }
+        } 
+        $c = new Child();
+        echo $c->sayHi();    
+    5.多态        
+        
+----------------------------------------------
+     public    公开的      任何时候都可以被访问
+     protected 保护的      只有子类继承父类后才能访问父类中受保护的方法
+     private   私有的      只有当前内部类进行访问
+     
+----------------------------------------------
+    6.解构函数,在实例化时会自动调用的一个函数
+    可以接收实例化时所传递的参数
+    function __construct($name,$age) {
+        echo '我被实例化了';
+        echo $name;
+        echo $age;
+    }
+ 
+----------------------------------------------------------------------------------------------
+                            数据库
+                            
+    1.登录mysql
+        mysql -u -root -p 回车  输入密码
+    2.创建数据库
+        create database study
+    3.选择数据库      
+        use student;
+    4.创建数据表或字段
+        create table students (
+            name char(16), 
+            age int,
+            gender char(),
+            hometown char(32)
+        );
+    5.设置编码集 
+        set name gbk   
+    6.添加数据
+    insert into students (name,age,gender,hometown) values('小明',18,'男','山西省');
+
+
+    清空数据库表 TRUNCATE users;
+    更新          UPDATE users SET hobby='写代码' WHERE name='小明'   
+    删除数据      DELETE FROM users WHERE name='小明'
+
+    筛选数据 SELECT * FROM users WHERE gender='女' AND score>80
+            SELECT * FROM users WHERE gender='女' OR score<>80      不等于!=  <>
+    排序数据 SELECT * FROM users ORDER BY age DESC, age ASC 
+    分组数据 SELECT * FORM users GROUP BY gender
+    SELECT avg(age)FROM uses GROUP BY gender    
+           SUM(score)   
+    主键:  自增长
+          唯一性id INSERT INTO users VALUES(null,小王','123456','男',17,58,'写代码');       
+
+-----------------------------------------------------------------------------
+    mysql:数据库管理的服务
+        cmd  Navicat  phpmyadmin
+         浏览器访问Apache,apache调用php php调用数据库 (增删改查)     
+         PHP有大量的函数专门用来访问数据库
+----------------------------------------------
+   1. 访问数据库
+         1).登录数据库    
+            $connect = mysqli_connect('localhost','root','123456'); 
+         2).选择数据库
+            mysqli_select_db($connect,study);   
+         3.)设置编码集
+            mysqli_set_charset($connect,'utf8'); 
+         4.发送指令
+            mysqli_query($connect,'insert into students valuse('小明',18)');  
+-----------------------------------------------------------------------------
+        注册功能
+        <?php 
+            //1.接受前端数据
+                $_POST
+            //2.连接数据库 
+                $_connect = mysqli_connect('localhost','root','123456');
+                mysqli_select_db($connect,'web');
+                mysqli_set_charset($connect,'utf8');
+
+                $query = "insert into users values('" . $_POST['name'] ."','" . $_POST['pass']"','
+                " . $_POST['gender']"' . "' . implode('|',$_POST['hobby']) . '",'" . $_POST['hometown']"')";
+                mysqli_query($connect, $query);
+
+                echo '注册成功';
+---------------------------------------------------------
+    取数据
+        //1.连接数据库
+        $connect = mysqli_connect('localhost','root','123456');     
+        mysqli_select_db($connect,'web'); 
+        mysqli_set_charset($connect,'utf8');  
+        $row = mysqli_query($connect,'select * from users');  
+        
+        //需要从查询结果中逐行将数据取出来  
+        //将资源类型的数据转成了关联数组
+        $list = array();
+        while($row = mysqli_fetch_assoc($rows)) {
+            $list[] = $row;
+        }
+        
+
+
+
+
+
+
+
+
+        
+
+       
+   
+
+
+
+      
+   
+
+
+ 
+
+
+
+
+
+
+
+
+    
+    
+                  
+                  
+           
+
+
+
+
+
+
+
+
+
+
+
+
+         
+
+         
+
+
+
+</body>
+
+</html>
