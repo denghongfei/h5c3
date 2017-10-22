@@ -1,0 +1,639 @@
+                         	  Ajax
+
+	1.Ajax不是一门新的语言,而是对现有技术(javascript)的综合利用
+
+		本质上是以HTTP协议的基础上 以异步的方式与服务器进行通信
+
+	2.异步:某段程序的执行不会阻塞其他程序的执行(事件,setTimeout)
+
+	3.XMLHttpRequest属于javascript中的一个内置的对象
+		在javascript中,每一个内置的对象(构造函数)都有其特定的功能
+
+		功能:向服务器发起一个请求,并能处理服务器做出的响应	
+
+	4.使用XMLHttpRequest发起请求和处理响应操作:
+
+		1).使用new来实例一个对象
+		var xhr = new XMLHttpRequest;
+
+
+		2)实例对象包含了若干的方法和事件,通过一些方法和事件实现与服务器的通信
+			a. open方法, 打开一个链接,需要至少两个参数(有3个参数)	
+				 第一个参数为请求方式,类似于表单的method
+				 第二个参数为请求地址,类似于表单的action
+
+			xhr.open('get','example.php');		 
+
+			b).setRequestHeader方法,用来设置请求的头信息
+				需要两个参数
+				第一个请求头的key  第二个请求头的value
+				可以请求多个,只需要重复调用即可
+			**请求头多数情况下可以不设置,也有一些情况是必须设置,不设置的情况下,浏览器会自动设置		
+
+			xhr.setRequestHeader('Content-Type','text/html');	
+
+			c.其中send方法,可以将请求发出去,(可以传参数)
+
+			xhr.send();
+
+		3).	需要处理服务端做出的响应
+			如果请求响应没有完成,后面的其他功能逻辑需要执行,必定会阻塞,
+			为了更大效率执行逻辑,可以通过一个事件来对响应结果(状态)
+			进行事件的监听,以实现异步的方式对响应结果进行处理
+
+			xhr.onreadstatechange = function(){
+
+			}
+--------------------------------------------------------
+	XMLHttpRequest 是一个独立的javascript的内建对象,用于向服务器发起请求,既可以使用异步方式,也可以使用同步方式,
+	当以异步的方式发起请求时,才成为ajax的一部分,如果说以同步的方式使用XMLHttpRequest,则不能称之为ajax
+	<script>
+		var xhr = new XMLHttpRequest;
+		//通过open方法的第三个参数 可以设定是以同步方式还是异步到的方式发起请求 
+		//第三个参数改为布尔类型,默认值是true,以异步的方式,改为false,则为同步方式
+		xhr.open('get','./example.php');
+		// xhr.open('get','./example.php',false);
+		xhr.send();
+
+		//当以异步的方式处理时,需要事件监听
+		xhr.onreadystatechange = function (){
+			if(xhr.readyState ==4 ) {
+				console.log(xhr.responseText);
+			}
+		}
+
+	</script>	
+
+	XMLHttpRequest用途: 不刷新页面就可以发送请求,实现页面数据的局部更新,有助于用户体验		
+	-----------------------------------------------------------------------
+	<script>
+		var username = document.querySelector('#name');
+		var span = document.querySelector('span');
+		username.addEventListener('blur',function(){
+			var xhr = new XMLHttpRequest;
+			xhr.open('get','./checked.php?name=' + username.value);
+			xhr.send();
+			xhr.onreadystatechange = function(){
+				if(readyState ==4) {
+					span.innerHTML = xhr.responseText;
+				}
+			}
+		})
+	</script>
+
+	<?php
+		$users= array('admin'=>123456);
+		$name = $_GET['name'];
+
+		$flag = array_key_exists($name,$users);
+
+		if($flag) {
+			echo '用户名已存在';
+		}else {
+			echo '注册成功';
+		}
+----------------------------------------------------------------------
+	携带的参数根据请求的方式不同,传递的参数也有些差异
+
+	如果以get方式发起请求时,携带的参数位于请求地址的后面,
+		格式为url?key1=val1&key2=val2..  并且请求主体为空
+
+	如果以post方式发起请求时,携带的参数通过请求主体来发送	
+		格式默认为key=val&key1=val2
+
+   get方式:
+
+	<script>
+		var xhr =new XMLHttpRequest;
+		xhr.open('get','./get.php?name=小明&age=16');
+		xhr.send();
+		xhr.onreadystatechange = function(){
+			if(readyState ==4) {
+				document.querySelector('.result').innerHTML = xhr.responseText;
+			}
+		}
+	</script>
+
+	<?php
+		echo $_GET['name'] . $GET['age'];
+
+	post方式:	
+	<script>
+		var xhr =new XMLHttpRequest;
+		xhr.open('post','./post.php');
+
+		//当以post方式发起请求时,并且携带了参数,必须设置请求头 Content-Type
+		xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded ');
+
+		//send发起请求并携带参数
+		xhr.send('name=小明&age=16');
+		xhr.onreadystatechange = function(){
+			if(xhr.readyState ==4 && xhr.status == 200) {
+				document.querySelector('.result').innerHTML = xhr.responseText;
+			}
+		}
+	</script>	
+---------------------------------------------------------------
+	//当以不同的方式向服务端发送数据,服务器需要不同的方式进行接收
+	$_POST专门是用来处理 Content-Type: application/x-www-form-urlencoded
+
+
+		json格式:
+			xhr.setRequestHeader('Content-Type','application/json');
+
+			xhr.send('{"name": "小明","age":16}');
+
+			通过file_get_contents  可以接收
+			var_dump(file_get_contents('php://input'));
+--------------------------------------------------------------------------
+	xhr.statusText;  获取服务器响应的状态信息
+	xhr.getResponseHeader();   获取某个响应头
+
+	xhr.getAllResponseHeder(); 获得所有响应头
+	-----------------------------------------------
+	get和post请求方式的差异
+			1).get没有请求主体	,使用xhr.send(null);
+			2).get通过在请求url上添加请求参数
+			3).post可以通过xhr.send('name=itcast&age=16');
+			4)post需要设置 xhr.setRequesrHeader('Content-Type','application/x-www-form-urlencoded');
+			5).get效率高
+			6)get大小限制4K,post没有限制
+--------------------------------------------------------------------------
+									XML
+
+	1.XML是一种标记语言	,用来传输数据	
+	<!-- <?xml version='1.0' encoding="UTF-8"?> -->
+	<div>
+		<h1>hello,xml</h1>
+	</div>	
+
+	1.文档声明必须写在最开始
+	2.必须要有一个元素
+	3.所有的标签都可以自定义	
+	&lt &gt eq	
+
+	<!-- <?xml version="1.0" encoding="UTF-8"?> -->
+	<items>
+		<item></item>
+		<item>
+			<name>刘德华</name>
+			<age>58</age>
+			<gender>男</gender>
+			<ablum>&lt;&lt;绿光&gt;&gt;</ablum>
+		</item>
+		<item></item>
+		<item></item>
+		<item></item>
+	</items>	
+
+	//如果服务端返回的数据是 xml,则需要使用xhr.responseXML进行获取
+	通过responseXML获得的是一个DOM,需要通过DOM操作的方法,将数据从DOM结构中取出
+	var html ='';
+	var xmlDoc = xhr.responseXML;
+		//获得item标签
+	 var xml = xmlDoc.getElementsByTagName('item');
+
+	 for(var i=0; i<items.length; i++) {
+	 	items[i].getElementsByTagName('name')[0].innetHTML;t
+	 	console.log(name,gender,ablum);
+	 }
+
+	不常用: 文档体积大  解析过于复杂
+
+
+    border-collapse:collapse;  边框合并 细线边框	
+    --------------------------------------------------------------
+    
+    								json
+
+	1.JSON 轻量级的文本数据交换格式,独立与语言
+	2.要实现不同语言之间数据的传输,需要一个特定格式的字符串作为"媒介",
+	各自对这个媒介进行解析,然后获得真正的数据
+	<?php
+		$arr = array('name'=>'小明','age'=>16);		
+
+		//通过json_encode()可以将PHP的一个数组或对象转成一个特定格式的字符串
+		//通过json_encode($arr);	//string;	
+
+	//接受到的数据
+		//接受到了一个特定格式的字符串,javascript提供了专门的方法可以将这个特定格式的字符串转成javascript的数据或对象
+
+		JSON是javascript 内置的对象,用来解析特定格式的字符串
+		JSON.parse(xhr.responseText);
+----------------------------------------------------------
+		var obj = {
+		 	name: '小红',
+		 	age: 16
+		}
+		
+		xhr.open('get','./demo.php?test=' + JSON.stringify(obj));
+
+		//通过json_decode可以将一个特定格式的字符串转成PHP的数组或对象;
+		$obj = json_decode($_GET['test']);
+		echo $obj ->name;
+		echo $obj ->age;
+-------------------------------------------------------------
+		JSON兼容处理:
+			在	IE低版本下,没有JSON这个内建对象,所以存在兼容性
+			在  IE低版本下,也不存在console这个对象
+
+			通过eval 可以讲讲字符串按着javascript的语法进行解析
+			var str = 'alert(1)';
+			eval('(' + str +')');
+
+			var json = '{"name":"小明","age":16}';
+			eval('(' + json + ')');
+
+			通过插件json.2.js可以解决JSON在IE低版本的兼容性问题,
+			引入以后可以正常的使用JSON.parse和JSON.stringify
+			<--有条件的引入此类库 -->
+			cc:ie6(快捷操作)
+			<!--[if lte IE 6]>
+				<script>alert(10)</script>	
+				<script src="./json.2.js"></script>
+			<![endif]-->
+---------------------------------------------------------------
+	1.XMLHttpRequest兼容性
+		var request;
+
+		if(XMLHttpRequest) {
+			request = new XMLHttpRequest;
+		}else {
+			//	IE5  IE6写法
+			request = new ActiveXObject('Microsoft.XMLHTTP');
+		}
+-----------------------------------------------------------------------------
+									模板引擎
+
+	1.通过模板引擎,可以非常方便的将后端取来的数据,拼凑成特定的html结构,再展示给用户
+	2.原理: 本质是利用正则表达式,替换模板当中预先定义好的标记
+	template:
+		var data = JSON.parse(xhr.responseText);
+		console.log(data);
+		var str = '<p>我叫<span><% name %></span></p>'
+		var reg = /(<%)\s+([a-z0-9]+)\s+(%>)/;
+
+		使用正则方法exec匹配到结果后,返回值为一个数组,数组第一个单元为匹配结果,第二个为index为匹配设置(从何处匹配到的)
+		第三个input为匹配原内容
+		匹配不到为null
+		console.log(reg.exec(str));
+
+		如果正则表达式中使用了"()"匹配单元,会将匹配结果拆分成若干部分
+		var math = reg.exec(str);
+		<!-- var str= str.replace(match[0],data[match[1]]); -->
+		where (match = reg.exec($str)) {
+			str = str.replace(match[0],data[match[1]]);
+		}
+
+		<script id="tpl" type="text/template"></script>
+
+		function template(data,tpl) {
+			var reg = /<%\s+([a-z0-9])\s+%>/;
+			var match;
+			var str = document.getElementById(tpl).innerHTML;
+			while(match = reg.exec(str)) {
+				str = str.replace(match[0],data[match[1]]);
+			}
+			return str;
+		}
+
+		var html = tempalte(data,'tpl');
+----------------------------------------------------------------------
+							artTemplate	
+
+	<div class"result"></div>	
+	<script id='tpl' type="text/template">
+		<ul>
+			<li><%= name %></li>
+			<li><%= age %></li>
+			<li><%= scholl %></li>
+		</ul>
+	</script>
+	<script src='./template-web.js'></script>
+	//会提供一个全局的函数
+	tempalte:  第一个参数:对象格式的数据  第二个参数: 模板字符串所对应的DOM的ID
+	
+	var data = JSON.parse(xhr.responseText);
+	//调用模板引擎
+	var html = template('tpl',data);
+	//展示结果
+	document.querySelector(.result).innerHTML = html;
+---------------------------------------------------------------
+	2.遍历
+		<script id="tpl" type=text/template>
+			<% for(var i=0;i<lists.length;i++){ %>
+				<tr>
+					<td><%= i+1 %></td>
+					<td><%= list[i].name %></td>
+					<td><%= list[i].age %</td>
+					<td><%= list[i].gender %</td>
+					<td><%= list[i].ablum %</td>
+				</tr>
+			<% } %>	
+		</script>
+		var html = template('tpl',{lists:data});
+		document.querySelector('tbody').innerHTML = html;
+	3.支持条件判断 <span></span>		
+
+	4.简洁语法:(handlesbars)
+		{{each lists}}
+		<tr>
+			<td>{{$index+1}}</td>   (索引值)
+			<td>{{$value.name}}</td>
+			<td>{{$value.age}}</td>
+			<td>{{$value.age}</td>
+			<td>{{$value.ablum}</td>
+		</tr>
+		{{/each}}
+
+		{{each lists as val key}}
+		<tr>
+			<td>{{key+1}}</td>   (索引值)
+			<td>{{val.name}}</td>
+
+			{{if val.age > 50}}
+			<td><span>{{val.age}}</span>span></td>
+			{{else}}
+			<td>{{val.age}}</td>
+			{{/if}}
+			<td>{{val.gender}</td>
+			<td>{{val.ablum}</td>
+		</tr>
+		{{/each}}
+-------------------------------------------------------------------------
+								同源和跨域	
+	1.同源策略: 浏览器出于安全的考虑指定的策略   (域名,协议,端口)	
+		必须域名,协议,断楼 这三者完全相同才能获取请求的数据,
+		并非是对方服务器做出的限制
+
+	2.跨域: 不同源则跨域	(浏览器不允许)
+		解决方案:
+
+			1).	访问自己的服务器
+				自己服务器   file_get_contents('http://www.baidu.com');
+				
+			2).如果对方服务器非常的大方,谁都可以随便拿我的数据
+				浏览器发起请求:先询问对方服务器,是否数据是公开的,如果说对方返回时,那么浏览器会将数据
+				交给开发者,如果对方服务器没有说是,浏览器则不会讲数据交给开发者
+			api.com:    header('Access-Control-Allow-Origin: *');    http://study.com	
+		
+											3).JSONP解决跨域
+
+			1.浏览器并未对标签的href属性做同源的限制		
+				href  script  src		
+				
+			<script src="http://api.com/js.php?callback=cbd"></script>
+			jsonp的本质:  利用src属性具有跨域的能力,然后由服务端返回前端事先定义好的函数的调用,并传参(参数即服务端的数组
+----------------------------------------------------------------------------------------
+													封装ajax工具函数
+	1.使用XMLHttpRequest可以向服务器发起异步请求
+		为了能够提升开发的效率,可以对XMLHttpRequest的使用进行封装
+		//如果使用普通方式传参数,不方便设置默认参数,严格按照参数顺序取数据
+
+		$.ajax({
+			url:'test1.php',
+			type: 'get',
+			data: {name:'小红',age: 18},
+			success:function(info) {
+				document.querySelector('.h1').innerHTML = info.name + info.age;
+			}
+		})
+	
+		//如果使用对象方式传递参数,是不受顺序的影响,较灵活
+		//定义一个对象,为对象添加这个方法,可以避免全局函数可能带来的全局变量的污染问题,
+		通过为这个函数传一个对象格式的参数,可以解决参数顺序的问题
+		var $= {
+			 ajax:function (obj){
+				 //默认的参数
+				var url = obj.url || location.pathname;
+				var type = obj.type || 'get';
+				var data = obj.data || {};	
+				function params (args){
+					var s = '';
+					for(var k in args) {
+						s +=k + '=' + args[k] + '&';
+					}
+					return s.slice(0,-1);
+				}
+				data = params(data);
+				var success  = obj.success || function() {}
+
+				var xhr = new XMLHttpRequest;
+				if(type == 'get') {
+					url = url + '?' + data;
+					data = null;`
+				}
+				xhr.open(type,url);
+				if(type =='post') {
+					xhr.setRequestHeader('Content-Type', 'application/x-www/form/urlencoded');
+				}
+				xhr.send(data);
+
+				xhr.addEventListener('readystatechange',function(){
+					if(xhr.readyState == 4 && xhr.status ==200) {
+						success(JSON.parse(xhr.responseText));
+						
+						}
+					}
+				})
+			}
+		};	
+----------------------------------------------------------------------------------------------------
+							jquery中ajax
+	
+	$.ajax({
+		url: './data.php',
+		type:'post',
+		data {name:'小明'},
+		success: function(info){
+			console.log(info);
+			var html = template('tpl',{list:info});
+			$('tbody').html(html);
+			}
+	});
+
+	<?php
+		header('Content-Type', 'application/json');
+----------------------------------------------------------------------
+	流程总结: 
+		请求时要有请求头,请求行,请求主图
+			 通过请求头可以将客户的信息传递给服务端
+			 通过请求行可以知道请求方式和请求地址
+			 通过请求主体向服务端传递参数
+	
+		响应时有状态行,响应头,响应主体
+			状态行可以得知服务器响应的状态
+			响应头可以知道服务器的信息
+			响应主体就是请求来的数据		 
+
+		
+			请求时有多种方式:如src,href action等属性,还有XMLHttpRequest
+
+			根据请求方式不同,HTTP要求传递的参数的方式也不同,
+				当以get方式发请求,参数放到请求地址的后面 格式 key=val&key1=val1
+
+				当以post方式发送请求,参数放到请求主体中,具体到XHR应该讲post数据放到send()中
+				格式为key=val&key1=val1;
+				或者'{"key":"val","key1":"val1"}'
+
+				当格式为key=val时    Content-Type:application/x-www-form-urlencoded
+				当格式为'{"key":"val"}'时, Content-Type: application/json
+
+				javascript中使用JSON.stringify可以将数组或对象转成json也可以使用
+							    JSON.parse 将json转成数组或对象
+
+				任何服务器都可以将数据转成json,
+					json_encode可以将php的数组或对象转成json
+					json_decode可以将json转成php的数组或对象
+----------------------------------------------------------------------------------------------
+								jquery中ajax
+	1.	<script>
+		$('button'.on('click',function(){
+			$.ajax({
+				url:'./example.php',
+				type: 'get',
+				// data:'',
+				//设置超时
+				timeout: 3000,
+				// 用来约束服务端返回的数据
+				dataType: 'json',
+				ContentType:'application/x-www-form-urlencoded',
+				beforeSend:function(){
+					//发送请求前调用函数
+					// 如果此回调函数返回值为false,则请求会终止 retrun false
+					if(数据不合格) {
+						return false;
+						// 则终止请求
+					}
+				},
+				success:function(){
+					//执行成功
+				},
+				error:function(){
+					//执行"失败"
+					// 执行逻辑的失败
+				},
+				complete:function(){
+					//不管成功,还是失败,都完成了
+				}
+			})
+		})
+	</script>								 
+-----------------------------------------------------------------------
+	2.$.ajax({
+		url: '',    //默认是当前地址
+		type: '',   //默认是get
+		// data: 'name=小明&age=16',
+		data:  {name: '小明',age: 16},
+		dataType: 'json',
+		timeout: 3000,
+	})	
+
+	3.快捷方法:
+		$.post('.post.php',fnction(){
+			
+		})
+		只能以get方式发起一个请求,相当于$.ajax的type属性设置了get
+		 需要至少一个,至多4个参数	
+		$.get('./get.php',{name:'小明',age:16},function(info){
+			console.log(err);
+		},function(err){
+			//失败了
+		})
+
+		//要求服务端只能返回json数据,相当于$.ajax的dataType属性设置为json
+		$.getJSON('./json.php',function(info){
+				console.log();
+		});	
+
+		//要求服务端只能返回json数据,相当于$.ajax的dataType属性设置为json	
+		$.getScript('./script.php',function(){
+
+		});	
+------------------------------------------------------------------
+							封装jquery中的jsonp
+	//函数ing,默认是 JQuery4452224556		
+	jsonpCallback: 'abc',
+	//传递参数的key,默认值是callback
+	jsonp: 'bcd',	
+----------------------------------------------------------------------
+		表单验证:
+		 <script>
+			//当回车和点击时,都可以触发submit事件
+			$('form').on('submit',function() {
+				//jquery提供了一个方法serialize可以一次性获取所有表单数据
+				表单项必须包含nanme属性
+				if($('.submit').hasClass('disabled')) {
+					return false;
+				}
+				$.ajax({
+					url: './register.php',
+					type: 'post',
+					data: '$(this).serialize();',
+
+					befroeSend: function(){
+						var regName = /[a-z0-9]{1,6}/;
+						if(!regName.test($('.name').val())) {
+							$('tips p').text('用户名至少为6位').fadein().delay(1500).fadeOut();
+							return false;
+						}
+
+						var regPass = /[0-9a-z]{6}/;
+
+						if(!regPass.test($('.pass').val())) {
+							$('tips p').text('密码只能	为6位').fadeIn().delay(1500).fadeOut();
+							return false;
+						}
+						$('.submit').val("正在提交.....").addClass('disabled');
+						$('.loading').show();	
+						
+
+					}, 
+
+					success: function(info){
+
+					},
+					complete: function(){
+						$('.submit').val("立即注册").removeClass('disabled');
+						$('.loading').hide();	
+					}
+				})
+				//阻止表单默认行为
+				return false;
+			})
+		 </script>									
+	
+
+
+
+
+
+
+		
+
+	
+
+
+	
+	
+
+			
+
+
+
+
+
+
+
+
+
+				
+
+
+
+
+
+
+
+	
+)
