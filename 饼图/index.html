@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <canvas></canvas>
+</body>
+<script>
+    // 1.准备数据
+    var data = [
+        {
+            title: '15-20岁',
+            num: 12
+        },
+        {
+            title: '20-25岁',
+            num: 30
+        },
+        {
+            title: '25-30岁',
+            num: 22
+        },
+        {
+            title: '30-35岁',
+            num: 10
+        },
+        {
+            title: '35-100岁',
+            num: 12
+        },
+    ];
+    var canvas = doucment.querySelector('canvas');
+    canvas.width = 600;
+    canvas.height = 300;
+    canvas.style.border = '1px solid #ff0000';
+    var context = canvas.getContext('2d');
+
+    //1.创建构造函数,使用面向对象的方式去绘制饼状图
+    var piChart = function () {
+        this.width = canvas.width;
+        this.height = canvas.height;
+        //获取画笔
+        this.context = context;
+        //设置圆心
+        this.zeroX = this.width / 2;
+        this.zeroY = this.height / 2;
+        //设置半径
+        this.radius = 150;
+        //设置延长线
+        this.outLine = 20;
+    }
+
+    //2.创建获取随机颜色的方法
+    Pichart.protype.getRandomColor = function () {
+        var r = Math.floor(Math.random() * 256);
+        var g = Math.floor(Math.random() * 256);
+        var b = Math.floor(Math.random() * 256);
+        return 'rgb(' + r + ',' + g + ',' + b + ')';
+    }
+
+    //3创建角度转换问题
+    piChart.prototype.transformAngle = function (data) {
+        //计算所有数据的总和
+        var total = 0;
+        data.forEach() {
+
+        }
+    }
+</script>
+
+</html>
