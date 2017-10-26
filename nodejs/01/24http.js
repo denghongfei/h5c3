@@ -13,7 +13,7 @@ server.on('request',(req, res) => {
 	console.log('有人来访问了...');
 	console.log(url.parse(req.url,true));
 
-	//在回调函数中可以设置两个恶参数,分别对应请求和响应
+	//在回调函数中可以设置两个参数,分别对应请求和响应
 	res.writeHead('200',{
 		'Content-Type': 'text/html; charset=UTF-8'
 	})
